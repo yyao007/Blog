@@ -1,4 +1,9 @@
-i.icon {
+.ui.menu .item>i.icon {
+    margin-left: 3px;
+    font-size: 1.2em;
+}
+
+.ui.menu .item>i.code.icon {
     font-size: 2em;
     /*padding-top: 5px;*/
 }
@@ -21,4 +26,21 @@ i.icon.chevron {
 
 .description {
     padding-left: 9px;
+}
+
+#timestamp {
+    text-align: center;
+}
+
+#author {
+    /*margin-left: 10px;*/
+}
+
+.ui.form {
+    width: 60%;
+    margin: 100px auto;
+}
+
+.ui.header {
+    text-align: center;
 }

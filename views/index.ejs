@@ -13,9 +13,12 @@
                         <a class="ui header" href="/blogs/<%=blog._id%>">
                             <%=blog.title%>
                         </a>
+                        <span class="pull-right">
+                                <em><%=blog.updatedDate.toDateString()%></em>
+                            </span>
                         <div class="meta">
                             <span>
-                                <em><%=blog.updatedDate.toDateString()%></em>
+                                By <em><%=blog.author.username%></em>
                             </span>
                         </div>
                         <div class="description">

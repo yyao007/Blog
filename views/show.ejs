@@ -3,10 +3,8 @@
     <div class="ui huge header"><%=blog.title%></div>
     <div class="ui top attached">
         <div class="item">
-            <div class="content">
-                <span>
-                    <em>Updated at: <%=blog.updatedDate.toLocaleString('en-US')%></em>
-                </span>
+            <div id="timestamp" class="content">
+                <em><%=blog.updatedDate.toLocaleString('en-US')%></em> <i class="ui icon caret right"></i> <em id="author">By <%=blog.author.username%></em>
             </div>
             <div class="ui hidden divider"></div>
             <img class="ui centered rounded middle image" src="<%=blog.image%>" >
@@ -16,12 +14,14 @@
             </div>
             <div class="ui hidden divider"></div>
 
-            <form onsubmit="return confirmForm();" id="delete" action="/blogs/<%=blog._id%>?_method=DELETE" method="POST">
-                <button class="ui negative right floated button">Delete</button>
-            </form>
-            <a class="ui blue button right floated " href="/blogs/<%=blog._id%>/edit">
-                Update
-            </a>
+            <% if (currUser && blog.author.id.equals(currUser._id)) { %>
+                <form onsubmit="return confirmForm();" id="delete" action="/blogs/<%=blog._id%>?_method=DELETE" method="POST">
+                    <button class="ui negative right floated button">DELETE</button>
+                </form>
+                <a class="ui blue button right floated " href="/blogs/<%=blog._id%>/edit">
+                    EDIT
+                </a>
+            <% } %>
             <div class="ui hidden divider"></div>
         </div>
     </div>
