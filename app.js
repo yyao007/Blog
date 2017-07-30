@@ -4,6 +4,8 @@ var express = require("express"),
 	bodyParser = require("body-parser"),
 	methodOverride = require("method-override"),
 	expressSanitizer = require("express-sanitizer"),
+	https = require("https"),
+	fs = require("fs"),
 	app = express();
 
 app.set("view engine", "ejs");
@@ -120,3 +122,21 @@ app.delete("/blogs/:id", function (req, res) {
 app.listen(1993, function () {
 	console.log("Blog Server listening on port 1993");
 });
+
+
+// handle https requests
+var sslOptions = {
+    key: fs.readFileSync("verification/key.pem"),
+    cert: fs.readFileSync("verification/cert.pem"),
+    passphrase: "931005"
+};
+
+https.createServer(sslOptions, app).listen(1994, function() {
+    console.log("Blog server with https listening on port 1994");
+});
+
+
+
+
+
+
