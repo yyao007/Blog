@@ -172,15 +172,15 @@ app.listen(1993, function () {
 
 
 // handle https requests
-var sslOptions = {
-    key: fs.readFileSync("verification/key.pem"),
-    cert: fs.readFileSync("verification/cert.pem"),
-    passphrase: "931005"
-};
-
-https.createServer(sslOptions, app).listen(1994, function() {
-    console.log("Blog server with https listening on port 1994");
-});
+// var sslOptions = {
+//     key: fs.readFileSync("verification/key.pem"),
+//     cert: fs.readFileSync("verification/cert.pem"),
+//     passphrase: "931005"
+// };
+//
+// https.createServer(sslOptions, app).listen(1994, function() {
+//     console.log("Blog server with https listening on port 1994");
+// });
 
 
 function isLoggedIn(req, res, next) {
