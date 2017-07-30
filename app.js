@@ -8,6 +8,7 @@ var express = require("express"),
 	expressSanitizer = require("express-sanitizer"),
 	https = require("https"),
 	fs = require("fs"),
+	moment = require("moment"),
 	LocalStrategy = require("passport-local"),
 	app = express();
 
@@ -88,6 +89,7 @@ app.get("/blogs/:id", function (req, res) {
 			console.log(err);
 			res.redirect("/blogs");
 		} else {
+			m = moment(blog.updatedDate);
 			blog.body = converter.makeHtml(blog.body);
 			res.render("show", {blog: blog});
 		}

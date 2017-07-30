@@ -4,7 +4,7 @@
     <div class="ui top attached">
         <div class="item">
             <div id="timestamp" class="content">
-                <em><%=blog.updatedDate.toLocaleString('en-US')%></em> <i class="ui icon caret right"></i> <em id="author">By <%=blog.author.username%></em>
+                <em><%=blog.updatedDate.toISOString()%></em> <i class="ui icon caret right"></i> <em id="author">By <%=blog.author.username%></em>
             </div>
             <div class="ui hidden divider"></div>
             <img class="ui centered rounded middle image" src="<%=blog.image%>" >
