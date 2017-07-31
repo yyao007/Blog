@@ -14,7 +14,7 @@
             </div>
             <div class="ui hidden divider"></div>
 
-            <% if (currUser && blog.author.id.equals(currUser._id)) { %>
+            <% if (currUser && (currUser.group === "admin" || blog.author.id.equals(currUser._id))) { %>
                 <form onsubmit="return confirmForm();" id="delete" action="/blogs/<%=blog._id%>?_method=DELETE" method="POST">
                     <button class="ui negative right floated button">DELETE</button>
                 </form>

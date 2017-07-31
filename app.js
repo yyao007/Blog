@@ -15,6 +15,8 @@ var express = require("express"),
 var User = require("./models/user"),
 	Blog = require("./models/blog");
 
+// var createAdmin = require("./admin");
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
@@ -197,8 +199,8 @@ function hasPermission(req, res, next) {
 		Blog.findById(req.params.id, function(err, blog) {
 			if (err) {
 				res.redirect("back");
-			} else {
-				if (blog.author.id.equals(req.user._id)) {
+			} else{
+				if (req.user.group === "admin" || blog.author.id.equals(req.user._id)) {
 					return next();
 				} else {
 					res.redirect("back");
