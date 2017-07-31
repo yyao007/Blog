@@ -3,8 +3,8 @@
     font-size: 1.2em;
 }
 
-.ui.menu .item>i.code.icon {
-    font-size: 2em;
+i.code.icon {
+    /*font-size: 2em;*/
     /*padding-top: 5px;*/
 }
 
@@ -43,4 +43,16 @@ i.icon.chevron {
 
 .ui.header {
     text-align: center;
+}
+
+@media only screen and (max-width: 764px) {
+    .fixed.desktop.main.menu {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 764px) {
+    .fixed.mobile.main.menu {
+        display: none;
+    }
 }

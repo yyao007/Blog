@@ -18,8 +18,50 @@
     <title>BLOG</title>
 </head>
 <body>
+    <div class="ui right vertical teal inverted sidebar labeled icon menu">
+        <% if (currUser) { %>
+        <a class="item">
+            Welcome back,
+            <p><%=currUser.username%>!</p>
+        </a>
+        <% } %>
+        <a href="/" class="item">
+            <i class="home icon"></i>
+            Home
+        </a>
+        <a href="/blogs/new" class="item">
+            <i class="write square icon"></i>
+            New Post
+        </a>
+        <% if (currUser) { %>
+        <a href="/logout" class="red item">
+            <i class="sign out icon"></i>
+            Log out
+        </a>
+        <% } else { %>
+        <a href="/login" class="violet item">
+            <i class="sign in icon"></i>
+            Log in
+        </a>
+        <a href="/register" class="green item">
+            <i class="add user icon"></i>
+            Sign up
+        </a>
+        <% } %>
+    </div>
 
-    <div class="ui teal inverted sticky menu fixed top">
+    <div class="ui fixed mobile teal inverted main menu">
+        <div class="header item">
+            <a href="/blogs"><i class="code icon"></i>BLOG</a>
+        </div>
+        <div class="right menu">
+            <a class="menu open item">
+                <i class="user circle outline icon"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="ui fixed desktop teal inverted main menu">
         <div class="ui container">
             <div class="header item">
                 <a href="/blogs"><i class="code icon"></i>BLOG</a>
@@ -28,7 +70,7 @@
             <a href="/blogs/new" class="blue item">New Post</a>
             <div class="right menu">
                 <% if (currUser) { %>
-                    <div class="item">Welcome back, <%=currUser.username%>!</div>
+                    <a class="item">Welcome back, <%=currUser.username%>!</a>
                     <a href="/logout" class="red item">Log out <i class="sign out icon"></i></a>
                 <% } else { %>
                     <a href="/login" class="violet item">Log in <i class="sign in icon"></i></a>
@@ -37,4 +79,6 @@
             </div>
         </div>
     </div>
+
+    <div class="pusher">
 

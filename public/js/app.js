@@ -9,6 +9,10 @@ $(document).ready(function() {
     });
 });
 
+$(".menu.open").on("click", function () {
+	$(".ui.sidebar").sidebar("toggle");
+});
+
 function confirmForm() {
 	return confirm("Are you sure you want to delete this post?");
 }
