@@ -19,16 +19,16 @@
 </head>
 <body>
 
-    <div class="ui fixed pointing inverted menu">
+    <div class="ui teal inverted sticky menu fixed top">
         <div class="ui container">
             <div class="header item">
-                <i class="code icon"></i>BLOG
+                <a href="/blogs"><i class="code icon"></i>BLOG</a>
             </div>
             <a href="/" class="grey item">Home</a>
             <a href="/blogs/new" class="blue item">New Post</a>
             <div class="right menu">
                 <% if (currUser) { %>
-                    <a href="#" class="item">Welcome back, <%=currUser.username%>!</a>
+                    <div class="item">Welcome back, <%=currUser.username%>!</div>
                     <a href="/logout" class="red item">Log out <i class="sign out icon"></i></a>
                 <% } else { %>
                     <a href="/login" class="violet item">Log in <i class="sign in icon"></i></a>

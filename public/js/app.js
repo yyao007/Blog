@@ -4,8 +4,9 @@
 $(document).ready(function() {
     var longTime = $("#timestamp > em:nth-child(1)");
     longTime.text(moment(longTime.text()).format("MM/DD/YYYY HH:mm:ss"));
-    var shortTime = $(".short-date");
-    shortTime.text(moment(shortTime.text()).format("MMMM D YYYY"));
+    $.each($(".short-date"), function (i, v) {
+	    $(v).text(moment($(v).text()).format("MMMM D YYYY"));
+    });
 });
 
 function confirmForm() {
