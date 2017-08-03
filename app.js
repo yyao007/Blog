@@ -7,6 +7,7 @@ var express = require("express"),
 	methodOverride = require("method-override"),
 	expressSanitizer = require("express-sanitizer"),
 	https = require("https"),
+	http = require("http"),
 	fs = require("fs"),
 	moment = require("moment"),
 	flash = require("connect-flash"),
@@ -48,7 +49,6 @@ app.use(function (req, res, next) {
 	res.locals.error = req.flash("error");
 	next();
 });
-
 
 app.get("/", function(req, res) {
 	res.redirect("/blogs");
@@ -188,12 +188,17 @@ app.get("/logout", function (req, res) {
 	res.redirect("/blogs");
 });
 
-app.listen(1993, function () {
+// HTTP server
+http.createServer(app).listen(1993, function () {
 	console.log("Blog Server listening on port 1993");
 });
 
+// app.listen(1993, function () {
+// 	console.log("Blog Server listening on port 1993");
+// });
 
-// handle https requests
+
+// HTTPS server
 // var sslOptions = {
 //     key: fs.readFileSync("verification/key.pem"),
 //     cert: fs.readFileSync("verification/cert.pem"),
@@ -232,3 +237,8 @@ function hasPermission(req, res, next) {
 		res.redirect("back");
 	}
 }
+
+
+app.use(function(req, res, next) {
+	res.status(404).render("404", {url: req.url});
+});
