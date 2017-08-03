@@ -92,4 +92,17 @@
     </div>
 
     <div class="pusher">
-
+        <div id="flash" class="ui container">
+            <% if (error && error.length > 0) {%>
+            <div class="ui negative mini message">
+                <i class="close icon"></i>
+                <div class="header"><%= error %></div>
+            </div>
+            <% } %>
+            <% if (success && success.length > 0) {%>
+            <div class="ui positive mini message">
+                <i class="close icon"></i>
+                <div class="header"><%= success %></div>
+            </div>
+            <% } %>
+        </div>

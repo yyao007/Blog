@@ -7,6 +7,11 @@ $(document).ready(function() {
     $.each($(".short-date"), function (i, v) {
 	    $(v).text(moment($(v).text()).format("MMMM D YYYY"));
     });
+
+    // close icon listener
+	$("#flash").on("click", ".close.icon", function (e) {
+		$(this).parent().remove();
+	});
 });
 
 $(".menu.open").on("click", function () {

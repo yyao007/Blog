@@ -9,6 +9,7 @@ var express = require("express"),
 	https = require("https"),
 	fs = require("fs"),
 	moment = require("moment"),
+	flash = require("connect-flash"),
 	LocalStrategy = require("passport-local"),
 	app = express();
 
@@ -21,12 +22,13 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
+app.use(flash());
 app.use(expressSanitizer());
 
 showdown.setFlavor('github');
 var converter = new showdown.Converter();
 
-mongoose.connect("mongodb://localhost/blog", {useMongoClient: true});
+mongoose.connect(process.env.DATABASE_BLOG, {useMongoClient: true});
 
 // PASSPORT CONFIGURATION
 app.use(session({
@@ -42,6 +44,8 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
 	res.locals.currUser = req.user;
+	res.locals.success = req.flash("success");
+	res.locals.error = req.flash("error");
 	next();
 });
 
@@ -75,10 +79,12 @@ app.post("/blogs", isLoggedIn, function (req, res) {
 	};
 	Blog.create(req.body.blog, function (err, blog) {
 		if (err) {
+			req.flash("error", "Database error");
 			console.log(err);
 			res.redirect("/new");
 		} else {
-			console.log("Created: " + blog);
+			req.flash("success", "Created post successfully!");
+			// console.log("Created: " + blog);
 			res.redirect("/blogs");
 		}
 	});
@@ -115,9 +121,11 @@ app.put("/blogs/:id", hasPermission, function (req, res) {
 	req.body.blog.body = req.sanitize(req.body.blog.body);
 	Blog.findByIdAndUpdate(req.params.id, req.body.blog, function (err, blog) {
 		if (err) {
+			req.flash("error", "Database error");
 			console.log(err);
-			res.redirect("/blogs");
+			res.redirect("back");
 		} else {
+			req.flash("success", "Updated post successfully!");
 			res.redirect("/blogs/" + req.params.id);
 		}
 	});
@@ -127,9 +135,13 @@ app.put("/blogs/:id", hasPermission, function (req, res) {
 app.delete("/blogs/:id", hasPermission, function (req, res) {
 	Blog.findByIdAndRemove(req.params.id, function (err) {
 		if (err) {
+			req.flash("error", "Database error");
 			console.log(err);
+			res.redirect("back");
+		} else {
+			req.flash("success", "Deleted post successfully!");
+			res.redirect("/blogs");
 		}
-		res.redirect("/blogs");
 	});
 });
 
@@ -144,9 +156,11 @@ app.post("/register", function (req, res) {
 	User.register(newUser, req.body.password, function(err, user) {
 		if (err) {
 			console.log(err);
+			req.flash("error", err.message);
 			return res.redirect("/register");
 		}
 		passport.authenticate("local")(req, res, function() {
+			req.flash("success", "Welcome to BLOG, " + user.username + "!");
 			res.redirect("/blogs");
 		});
 	});
@@ -160,13 +174,17 @@ app.get("/login", function (req, res) {
 
 // Log in user
 app.post("/login", passport.authenticate("local", {
-	successRedirect: "/blogs",
-	failureRedirect: "/login"
-}), function (req, res) {});
+	failureRedirect: "/login",
+	failureFlash: true
+}), (req, res) => {
+	req.flash("success", "Welcome back " + req.user.username + "!");
+	res.redirect("/blogs");
+});
 
 //Logout route
 app.get("/logout", function (req, res) {
 	req.logOut();
+	req.flash("success", "Logged out successfully!");
 	res.redirect("/blogs");
 });
 
@@ -191,6 +209,7 @@ function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
+	req.flash("error", "Please login first!");
 	res.redirect("/login");
 }
 
@@ -203,11 +222,13 @@ function hasPermission(req, res, next) {
 				if (req.user.group === "admin" || blog.author.id.equals(req.user._id)) {
 					return next();
 				} else {
+					req.flash("error", "You don't have permission to do that");
 					res.redirect("back");
 				}
 			}
 		});
 	} else {
+		req.flash("error", "Please login first!");
 		res.redirect("back");
 	}
 }
