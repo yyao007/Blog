@@ -1,0 +1,18 @@
+<% include partials/header %>
+<div class="ui main text container">
+    <div class="ui huge header">
+        Log in to post blog!
+    </div>
+    <form class="ui form index" action="/login" method="POST">
+        <div class="required field">
+            <label>Username</label>
+            <input name="username" type="text" placeholder="username">
+        </div>
+        <div class="required field">
+            <label>Password</label>
+            <input name="password" type="password" placeholder="password">
+        </div>
+        <button class="fluid ui blue button" type="submit">Log in!</button>
+    </form>
+</div>
+<% include partials/footer %>

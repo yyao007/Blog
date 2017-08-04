@@ -24,6 +24,7 @@
     "express": "^4.15.3",
     "express-sanitizer": "^1.0.2",
     "express-session": "^1.15.4",
+    "jsonwebtoken": "^7.4.1",
     "method-override": "^2.3.9",
     "moment": "^2.18.1",
     "mongoose": "^4.11.4",
@@ -36,6 +37,8 @@
   },
   "devDependencies": {
     "css-loader": "^0.28.4",
+    "eslint": "^4.3.0",
+    "eslint-config-google": "^0.9.1",
     "webpack": "^3.4.1"
   }
 }

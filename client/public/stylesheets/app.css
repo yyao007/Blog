@@ -1,0 +1,63 @@
+.ui.menu .item>i.icon {
+    margin-left: 3px;
+    font-size: 1.2em;
+}
+
+i.code.icon {
+    /*font-size: 2em;*/
+    /*padding-top: 5px;*/
+}
+
+i.icon.chevron {
+    font-size: 1.2em;
+}
+
+.container.main {
+    margin-top: 2rem;
+}
+
+#delete {
+    display: inline;
+}
+
+.middle.image {
+    height: 300px;
+}
+
+.description {
+    padding-left: 9px;
+}
+
+#timestamp {
+    text-align: center;
+}
+
+#author {
+    /*margin-left: 10px;*/
+}
+
+#flash {
+    height: 1.5rem;
+    margin-top: 4rem;
+}
+
+.ui.form.index {
+    width: 60%;
+    margin: 100px auto;
+}
+
+.ui.header {
+    text-align: center;
+}
+
+@media only screen and (max-width: 764px) {
+    .fixed.desktop.main.menu {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 764px) {
+    .fixed.mobile.main.menu {
+        display: none;
+    }
+}

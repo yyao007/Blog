@@ -6,6 +6,7 @@ var express = require("express"),
 	session = require("express-session"),
 	methodOverride = require("method-override"),
 	expressSanitizer = require("express-sanitizer"),
+	path = require("path"),
 	https = require("https"),
 	http = require("http"),
 	fs = require("fs"),
@@ -20,6 +21,7 @@ var User = require("./models/user"),
 // var createAdmin = require("./admin");
 
 app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
@@ -97,7 +99,7 @@ app.get("/blogs/:id", function (req, res) {
 			console.log(err);
 			res.redirect("/blogs");
 		} else {
-			m = moment(blog.updatedDate);
+			// var m = moment(blog.updatedDate);
 			blog.body = converter.makeHtml(blog.body);
 			res.render("show", {blog: blog});
 		}
@@ -146,12 +148,12 @@ app.delete("/blogs/:id", hasPermission, function (req, res) {
 });
 
 // Register route
-app.get("/register", function (req, res) {
+app.get("/register", needLogIn, function (req, res) {
 	res.render("register");
 });
 
 // Create new user
-app.post("/register", function (req, res) {
+app.post("/register", needLogIn, function (req, res) {
 	var newUser = new User({username: req.body.username});
 	User.register(newUser, req.body.password, function(err, user) {
 		if (err) {
@@ -167,13 +169,13 @@ app.post("/register", function (req, res) {
 });
 
 // Log in form route
-app.get("/login", function (req, res) {
+app.get("/login", needLogIn, function (req, res) {
 	// console.log("Log in route");
 	res.render("login");
 });
 
 // Log in user
-app.post("/login", passport.authenticate("local", {
+app.post("/login", needLogIn, passport.authenticate("local", {
 	failureRedirect: "/login",
 	failureFlash: true
 }), (req, res) => {
@@ -189,13 +191,13 @@ app.get("/logout", function (req, res) {
 });
 
 // HTTP server
-http.createServer(app).listen(1993, function () {
-	console.log("Blog Server listening on port 1993");
-});
-
-// app.listen(1993, function () {
+// http.createServer(app).listen(1993, function () {
 // 	console.log("Blog Server listening on port 1993");
 // });
+
+app.listen(1993, function () {
+	console.log("Blog Server listening on port 1993");
+});
 
 
 // HTTPS server
@@ -238,6 +240,13 @@ function hasPermission(req, res, next) {
 	}
 }
 
+function needLogIn(req, res, next) {
+	if (req.isAuthenticated()) {
+		req.flash("error", "You have already logged in");
+		return res.redirect("/blogs");
+	}
+	return next();
+}
 
 app.use(function(req, res, next) {
 	res.status(404).render("404", {url: req.url});
