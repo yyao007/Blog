@@ -7,21 +7,12 @@ let router = express.Router();
 let converter = new showdown.Converter();
 
 router.get('/', function(req, res) {
-    let method = req.query.method || 'updatedDate';
-    let sort = parseInt(req.query.sort || '-1');
-    let page = parseInt(req.query.page || 1);
-    let limit = 5;
-    let offset = (page - 1) * limit;
-    let json = null;
-
-    Blog.find({}).skip(offset).limit(limit).sort({[method]: sort}).exec(function(err, blogs) {
+    Blog.find({}, null, {sort: {updatedDate: -1}}, function(err, blogs) {
         if (err) {
             console.log(err);
-            json = {'message': 'Database error'};
         } else {
-            json = {'message': '200', 'data': blogs};
+            res.render('index', {blogs: blogs});
         }
-        res.json(json);
     });
 });
 

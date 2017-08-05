@@ -2,21 +2,17 @@ const express = require('express');
 const passport = require('passport');
 const User = require('../models/user');
 const middleware = require('../middleware');
+const jwt = require('jsonwebtoken');
+const opts = require('../../verification');
 
 let router = express.Router();
 
 router.get('/', function(req, res) {
-    res.redirect('/blogs');
+    res.json({message: 'Welcome to the BLOG API! Try GET /blogs to start.'});
 });
-
-// Register route
-router.get('/register', middleware.needLogIn, function(req, res) {
-    res.render('register');
-});
-
 
 // Create new user
-router.post('/Register', middleware.needLogIn, function(req, res) {
+router.post('/register', middleware.needLogIn, function(req, res) {
     let newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
@@ -31,19 +27,31 @@ router.post('/Register', middleware.needLogIn, function(req, res) {
     });
 });
 
-// Log in form route
-router.get('/login', middleware.needLogIn, function(req, res) {
-    // console.log('Log in route');
-    res.render('login');
-});
-
 // Log in user
-router.post('/login', middleware.needLogIn, passport.authenticate('local', {
-    failureRedirect: '/login',
-    failureFlash: true,
-}), function(req, res) {
-    req.flash('success', 'Welcome back ' + req.user.username + '!');
-    res.redirect('/blogs');
+router.post('/login', middleware.needLogIn, function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) {
+            return res.json({'message': 'error', 'error': err});
+        }
+        if (!user) {
+            return res.json({'message': 'failure', 'error': info});
+        } else {
+            let payload = {id: user.id};
+            let token = jwt.sign(payload, opts.secretOrKey, {
+                issuer: opts.issuer,
+                expiresIn: '24h',
+            });
+            return res.json({
+                'message': 'success',
+                'user': {
+                    'id': user._id,
+                    'username': user.username,
+                    'group': user.group,
+                },
+                'token': token,
+            });
+        }
+    })(req, res, next);
 });
 
 // Logout route

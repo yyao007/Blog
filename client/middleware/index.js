@@ -1,17 +1,11 @@
 const Blog = require('../models/blog');
-const passport = require('passport');
 
 exports.isLoggedIn = function(req, res, next) {
-    passport.authenticate('jwt', {session: false}, function(err, user) {
-        if (err) {
-            return res.json({'message': 'error', 'error': err});
-        }
-        if (!user) {
-            return res.status(401).json({'message': 'failure', 'error': '401 Unauthorized'});
-        } else {
-            return next();
-        }
-    })(req, res, next);
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    req.flash('error', 'Please login first!');
+    res.redirect('/login');
 };
 
 exports.hasPermission = function(req, res, next) {
