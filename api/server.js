@@ -6,6 +6,7 @@ const passport = require('passport');
 const passportJwt = require('passport-jwt');
 // const session = require('express-session');
 const methodOverride = require('method-override');
+const expressSanitizer = require('express-sanitizer');
 const path = require('path');
 const LocalStrategy = require('passport-local');
 
@@ -31,9 +32,14 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
 app.use(methodOverride('_method'));
+app.use(expressSanitizer());
 
+mongoose.connect(process.env.DATABASE_BLOG, {useMongoClient: true});
+
+// let seed = require('./seed');
+// seed();
 // PASSPORT CONFIGURATION
 // app.use(session({
 //     secret: 'I am YY for sure',
@@ -84,7 +90,7 @@ app.use('/blogs', blogsRoutes);
 
 
 app.use(function(req, res, next) {
-    res.status(404).render('404', {url: req.url});
+    res.status(404).json({'success': false, 'message': 'This page cannot be found'});
 });
 
 // HTTP server

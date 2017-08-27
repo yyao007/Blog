@@ -12,26 +12,25 @@ router.get('/', function(req, res) {
     let page = parseInt(req.query.page || 1);
     let limit = 5;
     let offset = (page - 1) * limit;
-    let json = null;
 
     Blog.find({}).skip(offset).limit(limit).sort({[method]: sort}).exec(function(err, blogs) {
         if (err) {
             console.log(err);
-            json = {'message': 'Database error'};
+            return res.json({'success': false, 'message': 'Database error'});
         } else {
-            json = {'message': '200', 'data': blogs};
+            return res.json({'success': true, 'data': {'blogs': blogs}});
         }
-        res.json(json);
     });
 });
 
 // new blog
 router.get('/new', middleware.isLoggedIn, function(req, res) {
-    res.render('new');
+    res.json({'success': true});
 });
 
 // create blog
 router.post('/', middleware.isLoggedIn, function(req, res) {
+    console.log(req.body);
     req.body.blog.body = req.sanitize(req.body.blog.body);
     req.body.blog.author = {
         id: req.user._id,
@@ -39,13 +38,14 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
     };
     Blog.create(req.body.blog, function(err, blog) {
         if (err) {
-            req.flash('error', 'Database error');
             console.log(err);
-            res.redirect('/new');
+            return res.json({'success': false, 'message': 'Database error'});
         } else {
-            req.flash('success', 'Created post successfully!');
             // console.log('Created: ' + blog);
-            res.redirect('/blogs');
+            return res.status(201).json({
+                'success': true,
+                'message': 'Posted successfully!',
+            });
         }
     });
 });
@@ -55,38 +55,39 @@ router.get('/:id', function(req, res) {
     Blog.findById(req.params.id, function(err, blog) {
         if (err) {
             console.log(err);
-            res.redirect('/blogs');
+            return res.json({'success': false, 'message': 'Database error'});
         } else {
             // var m = moment(blog.updatedDate);
             blog.body = converter.makeHtml(blog.body);
-            res.render('show', {blog: blog});
+            return res.json({
+                'success': true,
+                'data': {'blog': blog},
+            });
         }
     });
 });
 
 // edit
-router.get('/:id/edit', middleware.hasPermission, function(req, res) {
-    Blog.findById(req.params.id, function(err, blog) {
-        if (err) {
-            console.log(err);
-            res.redirect('/blogs');
-        } else {
-            res.render('edit', {blog: blog});
-        }
-    });
-});
+// router.get('/:id/edit', middleware.hasPermission, function(req, res) {
+//     Blog.findById(req.params.id, function(err, blog) {
+//         if (err) {
+//             console.log(err);
+//             res.redirect('/blogs');
+//         } else {
+//             res.render('edit', {blog: blog});
+//         }
+//     });
+// });
 
 // update
 router.put('/:id', middleware.hasPermission, function(req, res) {
     req.body.blog.body = req.sanitize(req.body.blog.body);
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, blog) {
         if (err) {
-            req.flash('error', 'Database error');
             console.log(err);
-            res.redirect('back');
+            return res.json({'success': false, 'message': 'Database error'});
         } else {
-            req.flash('success', 'Updated post successfully!');
-            res.redirect('/blogs/' + req.params.id);
+            return res.json({'success': true, 'message': 'Updated post successfully!'});
         }
     });
 });
@@ -95,12 +96,10 @@ router.put('/:id', middleware.hasPermission, function(req, res) {
 router.delete('/:id', middleware.hasPermission, function(req, res) {
     Blog.findByIdAndRemove(req.params.id, function(err) {
         if (err) {
-            req.flash('error', 'Database error');
             console.log(err);
-            res.redirect('back');
+            return res.json({'success': false, 'message': 'Database error'});
         } else {
-            req.flash('success', 'Deleted post successfully!');
-            res.redirect('/blogs');
+            return res.json({'success': true, 'message': 'Deleted post successfully!'});
         }
     });
 });
