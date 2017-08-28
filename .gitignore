@@ -3,3 +3,6 @@ node_modules/
 dist/
 
 verification/
+
+semantic/
+semantic.json
