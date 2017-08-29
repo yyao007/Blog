@@ -12,14 +12,25 @@ router.get('/', function(req, res) {
     let page = parseInt(req.query.page || 1);
     let limit = 5;
     let offset = (page - 1) * limit;
-
-    Blog.find({}).skip(offset).limit(limit).sort({[method]: sort}).exec(function(err, blogs) {
+    Blog.count({}, function(err, pagesCount) {
         if (err) {
             console.log(err);
             return res.json({'success': false, 'message': 'Database error'});
-        } else {
-            return res.json({'success': true, 'data': {'blogs': blogs}});
         }
+        Blog.find({}, {
+            body: 0,
+        }).skip(offset).limit(limit).sort({[method]: sort}).exec(function(err, blogs) {
+            if (err) {
+                console.log(err);
+                return res.json({'success': false, 'message': 'Database error'});
+            } else {
+                return res.json({'success': true, 'data': {
+                    'blogs': blogs,
+                    'page': page,
+                    'pagesCount': Math.ceil(pagesCount/limit),
+                }});
+            }
+        });
     });
 });
 
@@ -32,6 +43,7 @@ router.get('/new', middleware.isLoggedIn, function(req, res) {
 router.post('/', middleware.isLoggedIn, function(req, res) {
     console.log(req.body);
     req.body.blog.body = req.sanitize(req.body.blog.body);
+    req.body.blog.summary = req.body.blog.body.substring(0, 100);
     req.body.blog.author = {
         id: req.user._id,
         username: req.user.username,
@@ -82,6 +94,7 @@ router.get('/:id', function(req, res) {
 // update
 router.put('/:id', middleware.hasPermission, function(req, res) {
     req.body.blog.body = req.sanitize(req.body.blog.body);
+    req.body.blog.summary = req.body.blog.body.substring(0, 100);
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, blog) {
         if (err) {
             console.log(err);

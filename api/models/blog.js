@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const blogSchema = new mongoose.Schema({
     title: String,
     image: String,
+    summary: String,
     body: String,
     author: {
         id: {
