@@ -1,0 +1,8 @@
+{
+    "apps": [{
+	"name": "blog",
+	"watch": true,
+	"_interpreter": "/usr/bin/babel-node",
+        "script": "./app.js"
+     }]
+}

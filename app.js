@@ -51,6 +51,7 @@ app.use(function (req, res, next) {
 
 
 app.get("/", function(req, res) {
+	console.log("connected");
 	res.redirect("/blogs");
 });
 
@@ -72,7 +73,7 @@ app.get("/blogs/new", isLoggedIn, function (req, res) {
 
 // create blog
 app.post("/blogs", isLoggedIn, function (req, res) {
-	req.body.blog.body = req.sanitize(req.body.blog.body);
+	req.body.blog.body = req.sanitize(req.body.blog.body) || "";
 	req.body.blog.author = {
 		id: req.user._id,
 		username: req.user.username
